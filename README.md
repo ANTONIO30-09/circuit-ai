@@ -9,40 +9,19 @@ Dado el enunciado de un ejercicio o práctica de laboratorio, el sistema calcula
 Proyecto personal desarrollado para acompañar las prácticas de la materia de Microprocesadores/Sistemas Embebidos (UNIFRANZ, 6to semestre), que incluyen circuitos con microcontroladores PIC16F877A y ESP32, sensores analógicos/digitales, displays LCD I2C, teclados matriciales y actuadores (servos, relés).
 
 ## Arquitectura
-Texto del ejercicio
-│
-▼
-┌─────────────────┐
-│ FastAPI backend │ ← valida input
-└─────────────────┘
-│
-▼
-┌─────────────────┐
-│ Gemini API │ ← genera JSON estructurado
-│ (gemini-flash- │ siguiendo un schema fijo
-│ latest) │
-└─────────────────┘
-│
-▼
-┌─────────────────┐
-│ Pydantic │ ← rechaza circuitos inconsistentes
-│ validators │ (pines duplicados, nets huérfanas,
-│ │ pinouts inválidos) y dispara
-│ │ reintento automático
-└─────────────────┘
-│
-▼
-JSON validado
-(components + nets)
-│
-▼
-┌─────────────────┐
-│ Frontend React │ ← (en desarrollo)
-│ Esquemático: │
-│ React Flow │
-│ Protoboard: │
-│ Konva.js │
-└─────────────────┘
+
+```mermaid
+flowchart TD
+    A["Texto del ejercicio"] --> B["FastAPI backend<br/>valida input"]
+    B --> C["Gemini API<br/>(gemini-flash-latest)<br/>genera JSON estructurado"]
+    C --> D["Validadores Pydantic<br/>rechaza circuitos inconsistentes:<br/>pines duplicados, nets huérfanas,<br/>pinouts inválidos"]
+    D -->|"schema inválido"| C
+    D -->|"schema válido"| E["JSON validado<br/>(components + nets)"]
+    E --> F["Frontend React<br/>(en desarrollo)"]
+    F --> G["Esquemático<br/>React Flow"]
+    F --> H["Protoboard<br/>Konva.js"]
+```
+
 ## Por qué este diseño
 
 El punto crítico del sistema no es la IA en sí, sino el **contrato de datos** entre la IA y el renderer. En vez de dejar que el modelo "invente" nombres de pines o estructuras libres, el backend define:
