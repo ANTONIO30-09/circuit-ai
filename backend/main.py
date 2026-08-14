@@ -16,7 +16,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-MODEL = "gemini-flash-latest"
+MODEL = "gemini-flash-lite-latest"
 
 class ExerciseInput(BaseModel):
     text: str
