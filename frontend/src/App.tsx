@@ -29,55 +29,58 @@ export default function App() {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#0f0f10",
-        color: "#f8f9fa",
-        fontFamily: "sans-serif",
+        width: "100vw",
+        background: "#f8f9fa",
+        color: "#1a1a1a",
+        overflow: "hidden",
       }}
     >
-      <div style={{ padding: 16, borderBottom: "1px solid #333" }}>
-        <h2 style={{ margin: "0 0 12px 0" }}>circuit-ai</h2>
-        <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ padding: "8px 16px", borderBottom: "1px solid #dee2e6", background: "#fff", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <h2 style={{ margin: 0, color: "#1864ab", fontSize: 18, whiteSpace: "nowrap" }}>circuit-ai</h2>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Describí el ejercicio de electrónica..."
-            rows={3}
+            rows={1}
             style={{
               flex: 1,
-              background: "#1a1b1e",
-              color: "#f8f9fa",
-              border: "1px solid #333",
+              background: "#fff",
+              color: "#1a1a1a",
+              border: "1px solid #ced4da",
               borderRadius: 6,
-              padding: 8,
+              padding: "6px 8px",
               fontFamily: "inherit",
+              resize: "none",
             }}
           />
           <button
             onClick={handleGenerate}
             disabled={loading}
             style={{
-              padding: "0 20px",
+              padding: "6px 20px",
               borderRadius: 6,
               border: "none",
-              background: loading ? "#495057" : "#4c6ef5",
+              background: loading ? "#adb5bd" : "#1864ab",
               color: "#fff",
               cursor: loading ? "not-allowed" : "pointer",
               fontWeight: 700,
+              whiteSpace: "nowrap",
             }}
           >
             {loading ? "Generando..." : "Generar"}
           </button>
         </div>
-        {error && <div style={{ color: "#f03e3e", marginTop: 8 }}>{error}</div>}
+        {error && <div style={{ color: "#e03131", marginTop: 6, fontSize: 13 }}>{error}</div>}
         {circuit?.warnings && circuit.warnings.length > 0 && (
-          <div style={{ color: "#fab005", marginTop: 8, fontSize: 13 }}>
+          <div style={{ color: "#e8590c", marginTop: 6, fontSize: 12 }}>
             {circuit.warnings.map((w, i) => (
               <div key={i}>⚠ {w}</div>
             ))}
           </div>
         )}
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minHeight: 0 }}>
         {circuit ? (
           <SchematicView circuit={circuit} />
         ) : (
