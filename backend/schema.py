@@ -32,6 +32,7 @@ FIXED_PIN_TEMPLATES = {
     "buzzer": {"VCC", "GND"},
     "lcd_i2c": {"VCC", "GND", "SDA", "SCL"},
     "keypad_matrix": {"ROW1", "ROW2", "ROW3", "ROW4", "COL1", "COL2", "COL3", "COL4"},
+    "crystal": {"1", "2"},
 }
 
 SENSOR_ANALOG_SUBTYPES = {
@@ -48,7 +49,7 @@ SENSOR_DIGITAL_SUBTYPES = {
 ComponentType = Literal[
     "resistor", "led", "capacitor", "battery", "switch", "potentiometer",
     "relay", "servo", "buzzer", "microcontroller", "lcd_i2c",
-    "keypad_matrix", "sensor_analog", "sensor_digital", "wire", "ic",
+    "keypad_matrix", "sensor_analog", "sensor_digital", "wire", "ic", "crystal",
 ]
 
 

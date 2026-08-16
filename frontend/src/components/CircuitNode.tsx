@@ -67,6 +67,19 @@ function SwitchSymbol() {
   );
 }
 
+
+function CrystalSymbol() {
+  return (
+    <svg width="70" height="24" viewBox="0 0 70 24">
+      <line x1="0" y1="12" x2="26" y2="12" stroke={STROKE} strokeWidth="1.5" />
+      <rect x="26" y="3" width="18" height="18" fill="none" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="22" y1="4" x2="22" y2="20" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="48" y1="4" x2="48" y2="20" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="44" y1="12" x2="70" y2="12" stroke={STROKE} strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 const TWO_PIN_SYMBOLS: Record<string, () => JSX.Element> = {
   resistor: ResistorSymbol,
   capacitor: CapacitorSymbol,
@@ -74,6 +87,7 @@ const TWO_PIN_SYMBOLS: Record<string, () => JSX.Element> = {
   battery: BatterySymbol,
   switch: SwitchSymbol,
   potentiometer: ResistorSymbol,
+  crystal: CrystalSymbol,
 };
 
 function PinHandles({ pinId, position }: { pinId: string; position: Position }) {

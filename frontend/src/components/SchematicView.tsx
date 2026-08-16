@@ -96,7 +96,7 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
           sourceHandle: sourcePin,
           target: targetComp,
           targetHandle: targetPin,
-          type: "smoothstep",
+          type: "default",
           label: i === 0 ? net.id : undefined,
           style: { stroke: color, strokeWidth: 1.3 },
           labelStyle: { fill: "#1a1a1a", fontSize: 8, fontFamily: "monospace" },

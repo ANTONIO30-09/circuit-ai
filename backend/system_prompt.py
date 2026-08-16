@@ -25,6 +25,12 @@ MICROCONTROLADORES (type="microcontroller"):
 - ESP32: pines válidos son GPIO0,2,4,5,12,13,14,15,16,17,18,19,21,22,23,
   25,26,27,32,33,34,35,36,39, 3V3, GND, EN.
 - NUNCA inventes un nombre de pin que no esté en esa lista.
+- OBLIGATORIO para todo circuito con PIC16F877A: incluir circuito de oscilador
+  externo. Agregá un componente type="crystal" (pines "1" y "2") de valor
+  "20MHz" o "4MHz" conectado a OSC1 y OSC2, más dos capacitores cerámicos de
+  22pF (uno desde cada pin del cristal a GND). Sin esto el PIC no arranca.
+- OBLIGATORIO para todo circuito con PIC16F877A: resistencia pull-up de 10k
+  entre MCLR y VCC. Nunca dejes MCLR sin esta resistencia.
 - I2C en PIC: usar RC3 (SCL) y RC4 (SDA). I2C en ESP32: GPIO22 (SCL) y GPIO21 (SDA).
 - Servo/PWM en ESP32: preferí GPIO13, GPIO12, GPIO14. En PIC: RC1 o RC2 (CCP).
 - Analógico (LM35, LDR) en PIC: usar RA0-RA4 (canales AN0-AN4). En ESP32: GPIO32-GPIO36, GPIO39.
