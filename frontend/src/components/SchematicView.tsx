@@ -1,12 +1,14 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Dagre from "@dagrejs/dagre";
 import {
   ReactFlow,
   Background,
   BackgroundVariant,
   Controls,
+  applyNodeChanges,
   type Node,
   type Edge,
+  type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import type { Circuit } from "../types";
@@ -40,7 +42,7 @@ function layoutWithDagre(circuit: Circuit) {
   g.setGraph({ rankdir: "LR", nodesep: 90, ranksep: 160, ranker: "tight-tree" });
   g.setDefaultEdgeLabel(() => ({}));
 
-  const TWO_PIN_TYPES = new Set(["resistor", "capacitor", "led", "battery", "switch", "potentiometer"]);
+  const TWO_PIN_TYPES = new Set(["resistor", "capacitor", "led", "battery", "switch", "potentiometer", "crystal"]);
 
   for (const c of circuit.components) {
     const isTwoPin = c.pins.length === 2 && TWO_PIN_TYPES.has(c.type);
@@ -48,14 +50,12 @@ function layoutWithDagre(circuit: Circuit) {
     g.setNode(c.id, { width, height });
   }
 
-  const edgePairs: { source: string; target: string }[] = [];
   for (const net of circuit.nets) {
     for (let i = 0; i < net.connected_pins.length - 1; i++) {
       const s = net.connected_pins[i].split(".")[0];
       const t = net.connected_pins[i + 1].split(".")[0];
       if (s !== t) {
         g.setEdge(s, t);
-        edgePairs.push({ source: s, target: t });
       }
     }
   }
@@ -71,7 +71,7 @@ function layoutWithDagre(circuit: Circuit) {
 }
 
 export default function SchematicView({ circuit }: { circuit: Circuit }) {
-  const nodes: Node[] = useMemo(() => {
+  const initialNodes: Node[] = useMemo(() => {
     const positions = layoutWithDagre(circuit);
     return circuit.components.map((c) => ({
       id: c.id,
@@ -80,6 +80,16 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
       data: { component: c },
     }));
   }, [circuit]);
+
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+
+  useEffect(() => {
+    setNodes(initialNodes);
+  }, [initialNodes]);
+
+  function onNodesChange(changes: NodeChange[]) {
+    setNodes((nds) => applyNodeChanges(changes, nds));
+  }
 
   const edges: Edge[] = useMemo(() => {
     const result: Edge[] = [];
@@ -96,7 +106,7 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
           sourceHandle: sourcePin,
           target: targetComp,
           targetHandle: targetPin,
-          type: "default",
+          type: "smoothstep",
           label: i === 0 ? net.id : undefined,
           style: { stroke: color, strokeWidth: 1.3 },
           labelStyle: { fill: "#1a1a1a", fontSize: 8, fontFamily: "monospace" },
@@ -113,6 +123,7 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
         fitView
         fitViewOptions={{ padding: 0.25, maxZoom: 0.85 }}
       >

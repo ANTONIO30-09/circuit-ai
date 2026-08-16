@@ -80,9 +80,28 @@ export default function App() {
           </div>
         )}
       </div>
-      <div style={{ flex: 1, minHeight: 0 }}>
+      <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         {circuit ? (
-          <SchematicView circuit={circuit} />
+          <>
+            <div
+              style={{
+                position: "absolute",
+                top: 8,
+                left: 8,
+                zIndex: 10,
+                background: "#fff",
+                border: "1px solid #ced4da",
+                borderRadius: 6,
+                padding: "6px 10px",
+                fontSize: 12,
+                color: "#495057",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+              }}
+            >
+              💡 Podés arrastrar cualquier componente para acomodar el circuito
+            </div>
+            <SchematicView circuit={circuit} />
+          </>
         ) : (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: 0.5 }}>
             Ingresá un ejercicio y generá el circuito
