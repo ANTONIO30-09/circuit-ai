@@ -125,7 +125,7 @@ export default function CircuitNode({ data }: { data: { component: Component } }
         border: `1.5px solid ${BODY_BORDER}`,
         background: BODY_FILL,
         color: "#1a1a1a",
-        minWidth: 190,
+        minWidth: 200,
         fontFamily: "monospace",
         boxShadow: "1px 1px 3px rgba(0,0,0,0.25)",
       }}
@@ -138,23 +138,25 @@ export default function CircuitNode({ data }: { data: { component: Component } }
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", minHeight: bodyH }}>
         <div>
-          {leftPins.map((p) => {
+          {leftPins.map((p, idx) => {
             const pinName = p.id.split(".").slice(1).join(".");
             return (
-              <div key={p.id} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", paddingLeft: 10, fontSize: 10 }}>
+              <div key={p.id} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", paddingLeft: 14, fontSize: 10, gap: 4 }}>
                 <PinHandles pinId={p.id} position={Position.Left} />
-                {pinName}
+                <span style={{ color: PIN_NUM_COLOR, fontSize: 8, minWidth: 10 }}>{idx + 1}</span>
+                <span>{pinName}</span>
               </div>
             );
           })}
         </div>
         <div>
-          {rightPins.map((p) => {
+          {rightPins.map((p, idx) => {
             const pinName = p.id.split(".").slice(1).join(".");
             return (
-              <div key={p.id} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 10, fontSize: 10 }}>
+              <div key={p.id} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 14, fontSize: 10, gap: 4 }}>
+                <span>{pinName}</span>
+                <span style={{ color: PIN_NUM_COLOR, fontSize: 8, minWidth: 10, textAlign: "right" }}>{leftPins.length + idx + 1}</span>
                 <PinHandles pinId={p.id} position={Position.Right} />
-                {pinName}
               </div>
             );
           })}

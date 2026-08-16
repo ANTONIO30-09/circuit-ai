@@ -37,7 +37,7 @@ function estimateNodeSize(pinCount: number, isTwoPin: boolean) {
 
 function layoutWithDagre(circuit: Circuit) {
   const g = new Dagre.graphlib.Graph();
-  g.setGraph({ rankdir: "LR", nodesep: 70, ranksep: 130 });
+  g.setGraph({ rankdir: "LR", nodesep: 90, ranksep: 160, ranker: "tight-tree" });
   g.setDefaultEdgeLabel(() => ({}));
 
   const TWO_PIN_TYPES = new Set(["resistor", "capacitor", "led", "battery", "switch", "potentiometer"]);
