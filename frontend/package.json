@@ -12,8 +12,10 @@
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
     "@xyflow/react": "^12.11.3",
+    "konva": "^10.3.1",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-konva": "^19.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

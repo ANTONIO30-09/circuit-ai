@@ -1,3 +1,4 @@
+import { type ReactElement } from "react";
 import { Handle, Position } from "@xyflow/react";
 import type { Component } from "../types";
 
@@ -80,7 +81,7 @@ function CrystalSymbol() {
   );
 }
 
-const TWO_PIN_SYMBOLS: Record<string, () => JSX.Element> = {
+const TWO_PIN_SYMBOLS: Record<string, () => ReactElement> = {
   resistor: ResistorSymbol,
   capacitor: CapacitorSymbol,
   led: LedSymbol,

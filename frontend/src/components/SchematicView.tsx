@@ -13,23 +13,9 @@ import {
 import "@xyflow/react/dist/style.css";
 import type { Circuit } from "../types";
 import CircuitNode from "./CircuitNode";
+import { buildNetColorMap, resolveNetColor } from "../utils/netColors";
 
 const nodeTypes = { circuitNode: CircuitNode };
-
-const NET_COLORS: Record<string, string> = {
-  red: "#c92a2a",
-  black: "#212529",
-  orange: "#e8590c",
-  yellow: "#f08c00",
-  green: "#2b8a3e",
-  blue: "#1864ab",
-};
-
-function resolveColor(hint?: string | null): string {
-  if (!hint) return "#37474f";
-  if (hint.startsWith("#")) return hint;
-  return NET_COLORS[hint.toLowerCase()] || "#37474f";
-}
 
 function estimateNodeSize(pinCount: number, isTwoPin: boolean) {
   if (isTwoPin) return { width: 90, height: 70 };
@@ -91,6 +77,8 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
     setNodes((nds) => applyNodeChanges(changes, nds));
   }
 
+  const netColorMap = useMemo(() => buildNetColorMap(circuit.nets), [circuit.nets]);
+
   const edges: Edge[] = useMemo(() => {
     const result: Edge[] = [];
     for (const net of circuit.nets) {
@@ -99,7 +87,7 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
         const targetPin = net.connected_pins[i + 1];
         const sourceComp = sourcePin.split(".")[0];
         const targetComp = targetPin.split(".")[0];
-        const color = resolveColor(net.color_hint);
+        const color = resolveNetColor(net.id, netColorMap);
         result.push({
           id: `${net.id}-${i}`,
           source: sourceComp,
@@ -115,7 +103,7 @@ export default function SchematicView({ circuit }: { circuit: Circuit }) {
       }
     }
     return result;
-  }, [circuit]);
+  }, [circuit, netColorMap]);
 
   return (
     <div style={{ width: "100%", height: "100%", background: "#c7c294" }}>
