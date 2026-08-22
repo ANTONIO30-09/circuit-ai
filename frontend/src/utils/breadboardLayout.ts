@@ -59,11 +59,19 @@ class OccupancyGrid {
   }
 }
 
+const MODULE_TYPES = new Set([
+  "sensor_analog", "sensor_digital", "lcd_i2c", "keypad_matrix", "servo", "relay", "ic",
+]);
+
 function spanForComponent(c: Component): number {
   if (c.type === "microcontroller" && c.pins.length > 2) {
     return Math.ceil(c.pins.length / 2);
   }
   if (c.pins.length === 2 && TWO_PIN_TYPES.has(c.type)) return 2;
+  if (MODULE_TYPES.has(c.type)) {
+    // +1 columna de padding: el glyph visual del modulo es mas ancho que sus pines
+    return Math.max(c.pins.length, 1) + 1;
+  }
   return Math.max(c.pins.length, 1);
 }
 

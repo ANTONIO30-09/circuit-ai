@@ -1,10 +1,11 @@
-import { type ReactElement } from "react";
 import { Handle, Position } from "@xyflow/react";
+import type { ReactElement } from "react";
 import type { Component } from "../types";
+import { FULL_PINOUTS } from "../utils/mcuPinouts";
 
 const STROKE = "#1a1a1a";
-const BODY_FILL = "#d8d3a0";
-const BODY_BORDER = "#7a1f1f";
+const BODY_FILL = "#f5ecd7";
+const BODY_BORDER = "#8b1a1a";
 const REF_COLOR = "#000000";
 const VALUE_COLOR = "#7a1f1f";
 const PIN_NUM_COLOR = "#c92a2a";
@@ -32,11 +33,18 @@ function CapacitorSymbol() {
 
 function LedSymbol() {
   return (
-    <svg width="70" height="30" viewBox="0 0 70 30">
-      <line x1="0" y1="15" x2="26" y2="15" stroke={STROKE} strokeWidth="1.5" />
-      <polygon points="26,4 26,26 46,15" fill="none" stroke={STROKE} strokeWidth="1.5" />
-      <line x1="46" y1="4" x2="46" y2="26" stroke={STROKE} strokeWidth="2" />
-      <line x1="46" y1="15" x2="70" y2="15" stroke={STROKE} strokeWidth="1.5" />
+    <svg width="70" height="40" viewBox="0 0 70 40">
+      <line x1="0" y1="20" x2="16" y2="20" stroke={STROKE} strokeWidth="1.5" />
+      <circle cx="35" cy="20" r="19" fill="#fce8e8" stroke="#c92a2a" strokeWidth="1.5" />
+      <polygon points="27,12 27,28 41,20" fill="none" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="41" y1="12" x2="41" y2="28" stroke={STROKE} strokeWidth="2" />
+      <line x1="54" y1="20" x2="70" y2="20" stroke={STROKE} strokeWidth="1.5" />
+      <g stroke={STROKE} strokeWidth="1">
+        <line x1="44" y1="6" x2="50" y2="0" />
+        <polyline points="46,0 50,0 50,4" fill="none" />
+        <line x1="50" y1="10" x2="56" y2="4" />
+        <polyline points="52,4 56,4 56,8" fill="none" />
+      </g>
     </svg>
   );
 }
@@ -68,15 +76,14 @@ function SwitchSymbol() {
   );
 }
 
-
 function CrystalSymbol() {
   return (
-    <svg width="70" height="24" viewBox="0 0 70 24">
-      <line x1="0" y1="12" x2="26" y2="12" stroke={STROKE} strokeWidth="1.5" />
-      <rect x="26" y="3" width="18" height="18" fill="none" stroke={STROKE} strokeWidth="1.5" />
-      <line x1="22" y1="4" x2="22" y2="20" stroke={STROKE} strokeWidth="1.5" />
-      <line x1="48" y1="4" x2="48" y2="20" stroke={STROKE} strokeWidth="1.5" />
-      <line x1="44" y1="12" x2="70" y2="12" stroke={STROKE} strokeWidth="1.5" />
+    <svg width="70" height="26" viewBox="0 0 70 26">
+      <line x1="0" y1="13" x2="24" y2="13" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="24" y1="2" x2="24" y2="24" stroke={STROKE} strokeWidth="2" />
+      <rect x="28" y="4" width="14" height="18" fill="#f5f0e6" stroke={STROKE} strokeWidth="1.5" />
+      <line x1="46" y1="2" x2="46" y2="24" stroke={STROKE} strokeWidth="2" />
+      <line x1="46" y1="13" x2="70" y2="13" stroke={STROKE} strokeWidth="1.5" />
     </svg>
   );
 }
@@ -127,6 +134,67 @@ export default function CircuitNode({ data }: { data: { component: Component } }
     );
   }
 
+  const fullPinout = c.board ? FULL_PINOUTS[c.board] : null;
+
+  if (fullPinout) {
+    const usedByName: Record<string, string> = {};
+    for (const p of c.pins) {
+      const name = p.id.split(".").slice(1).join(".");
+      usedByName[name] = p.id;
+    }
+    const rowH = 15;
+    const bodyH = Math.max(fullPinout.left.length, fullPinout.right.length) * rowH + 16;
+
+    return (
+      <div
+        style={{
+          border: `1.5px solid ${BODY_BORDER}`,
+          background: BODY_FILL,
+          color: "#1a1a1a",
+          minWidth: 220,
+          fontFamily: "monospace",
+          boxShadow: "1px 1px 3px rgba(0,0,0,0.25)",
+        }}
+      >
+        <div style={{ textAlign: "center", padding: "3px 4px", borderBottom: `1px solid ${BODY_BORDER}` }}>
+          <span style={{ fontWeight: 700, color: REF_COLOR, fontSize: 12, fontFamily: "sans-serif" }}>{c.id}</span>
+          <span style={{ fontSize: 10, marginLeft: 6, color: VALUE_COLOR }}>{c.board}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", minHeight: bodyH }}>
+          <div>
+            {fullPinout.left.map((pinName, idx) => {
+              const realId = usedByName[pinName];
+              const used = !!realId;
+              return (
+                <div key={pinName} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", paddingLeft: 14, fontSize: 9, gap: 3 }}>
+                  {used && <PinHandles pinId={realId} position={Position.Left} />}
+                  <span style={{ color: used ? PIN_NUM_COLOR : "#c9c2a8", fontSize: 7, minWidth: 9 }}>{idx + 1}</span>
+                  <span style={{ color: used ? "#1a1a1a" : "#adb5bd", fontWeight: used ? 700 : 400 }}>{pinName}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            {fullPinout.right.map((pinName, idx) => {
+              const realId = usedByName[pinName];
+              const used = !!realId;
+              return (
+                <div key={pinName} style={{ position: "relative", height: rowH, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 14, fontSize: 9, gap: 3 }}>
+                  <span style={{ color: used ? "#1a1a1a" : "#adb5bd", fontWeight: used ? 700 : 400 }}>{pinName}</span>
+                  <span style={{ color: used ? PIN_NUM_COLOR : "#c9c2a8", fontSize: 7, minWidth: 9, textAlign: "right" }}>{fullPinout.left.length + idx + 1}</span>
+                  {used && <PinHandles pinId={realId} position={Position.Right} />}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div style={{ textAlign: "center", fontSize: 9, color: "#495057", borderTop: `1px solid #a89968`, padding: "1px 4px", fontFamily: "sans-serif" }}>
+          {c.label}
+        </div>
+      </div>
+    );
+  }
+
   const pins = c.pins;
   const mid = Math.ceil(pins.length / 2);
   const leftPins = pins.slice(0, mid);
@@ -147,7 +215,6 @@ export default function CircuitNode({ data }: { data: { component: Component } }
     >
       <div style={{ textAlign: "center", padding: "3px 4px", borderBottom: `1px solid ${BODY_BORDER}` }}>
         <span style={{ fontWeight: 700, color: REF_COLOR, fontSize: 12, fontFamily: "sans-serif" }}>{c.id}</span>
-        {c.board && <span style={{ fontSize: 10, marginLeft: 6, color: VALUE_COLOR }}>{c.board}</span>}
         {c.subtype && <span style={{ fontSize: 10, marginLeft: 6, color: VALUE_COLOR }}>{c.subtype}</span>}
         {c.value && <div style={{ fontSize: 9, color: VALUE_COLOR }}>{c.value}</div>}
       </div>
